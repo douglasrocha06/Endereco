@@ -8,7 +8,7 @@ from flask_httpauth import HTTPBasicAuth
 auth = HTTPBasicAuth()
 
 #Vizualizar ENDEREÇOS DE TODOS CLIENTES 
-@app.route('/clientes/enderecos', methods=['GET'])
+@app.route('/enderecos/clientes', methods=['GET'])
 @auth.login_required
 def enderecos_clientes():
 	try:
@@ -26,7 +26,7 @@ def enderecos_clientes():
 		conn.close()
 
 #Vizualiza os endereços de UM CLIENTE ESPECÍFICO
-@app.route('/clientes/<int:id>/enderecos', methods=['GET'])
+@app.route('/enderecos/<int:id>/clientes', methods=['GET'])
 @auth.login_required
 def vizu_end_clientes(id):
 	try:
