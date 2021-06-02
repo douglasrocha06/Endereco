@@ -14,7 +14,7 @@ def enderecos_clientes():
 	try:
 		conn = mysql.connect() 
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("select clientes.id as id, clientes.nome as Nome, enderecos.rua as Rua, enderecos.numero as Numero, enderecos.complemento as Complemento, enderecos.bairro as Bairro, enderecos.cidade as Cidade, enderecos.estado as Estado, enderecos.cep as Cep from clientes join enderecos on clientes.id = enderecos.idCliente order by Nome, Rua")
+		cursor.execute("select clientes.id as id, clientes.nome as Nome, enderecos.rua as Rua, enderecos.numero as Numero, enderecos.complemento as Complemento, enderecos.bairro as Bairro, enderecos.cidade as Cidade, enderecos.estado as Estado, enderecos.cep as Cep from api_clientes.clientes join api_clientes.enderecos on clientes.id = enderecos.idCliente order by Nome, Rua")
 		linha = cursor.fetchall() #Retornará todas as linhas do banco de dados 
 		resposta = jsonify(linha) #Formata em JSON
 		resposta.status_code = 200
@@ -32,7 +32,7 @@ def vizu_end_clientes(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("select clientes.id as id,clientes.nome as Nome, enderecos.rua as Rua, enderecos.numero as Numero, enderecos.complemento as Complemento, enderecos.bairro as Bairro, enderecos.cidade as Cidade, enderecos.estado as Estado, enderecos.cep as Cep from clientes join enderecos on clientes.id = enderecos.idCliente where id = %s", id)
+		cursor.execute("select clientes.id as id,clientes.nome as Nome, enderecos.rua as Rua, enderecos.numero as Numero, enderecos.complemento as Complemento, enderecos.bairro as Bairro, enderecos.cidade as Cidade, enderecos.estado as Estado, enderecos.cep as Cep from api_clientes.clientes join api_clientes.enderecos on clientes.id = enderecos.idCliente where id = %s", id)
 		linhas = cursor.fetchall() #Retornará todas as linhas com os endereços do cliente específico. 
 
 		if not linhas:
@@ -53,7 +53,7 @@ def enderecos():
 	try:
 		conn = mysql.connect() 
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT idEndereco, rua, numero, complemento, bairro, cidade, estado, cep, idCliente FROM enderecos")
+		cursor.execute("SELECT idEndereco, rua, numero, complemento, bairro, cidade, estado, cep, idCliente FROM api_clientes.enderecos")
 		linha = cursor.fetchall() #Retornará todas as linhas do banco de dados 
 		resposta = jsonify(linha) #Formata em JSON
 		resposta.status_code = 200
@@ -71,7 +71,7 @@ def vizualizar(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT idEndereco, rua, numero, complemento, bairro, cidade, estado, cep, idCliente FROM enderecos WHERE idEndereco =%s", id)
+		cursor.execute("SELECT idEndereco, rua, numero, complemento, bairro, cidade, estado, cep, idCliente FROM api_clientes.enderecos WHERE idEndereco =%s", id)
 		linhas = cursor.fetchone() #Retornará apenas uma linha do banco de dados
 
 		if not linhas:
@@ -100,7 +100,7 @@ def adicionar():
 		cep = json['cep']
 		idCliente = json['idCliente']
 		if rua and numero and complemento and bairro and cidade and estado and cep and idCliente and request.method == 'POST':			
-			sqlQuery = "INSERT INTO enderecos(rua, numero, complemento, bairro, cidade, estado, cep, idCliente) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
+			sqlQuery = "INSERT INTO api_clientes.enderecos(rua, numero, complemento, bairro, cidade, estado, cep, idCliente) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"
 			dados = (rua, numero, complemento, bairro, cidade, estado, cep, idCliente)
 			conn = mysql.connect() #Conexão com banco de dados
 			cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -133,7 +133,7 @@ def atualizar():
 		cep = json['cep']
 		idCliente = json['idCliente']
 		if rua and numero and complemento and bairro and cidade and estado and cep and idCliente and idEndereco and request.method == 'PUT':			
-			sqlQuery = "UPDATE enderecos SET rua=%s, numero=%s, complemento=%s, bairro=%s, cidade=%s, estado=%s, cep=%s, idCliente=%s WHERE idEndereco=%s"
+			sqlQuery = "UPDATE api_clientes.enderecos SET rua=%s, numero=%s, complemento=%s, bairro=%s, cidade=%s, estado=%s, cep=%s, idCliente=%s WHERE idEndereco=%s"
 			dados = (rua, numero, complemento, bairro, cidade, estado, cep, idCliente, idEndereco,)
 			conn = mysql.connect() #Conexão banco de dados 
 			cursor = conn.cursor()
@@ -164,7 +164,7 @@ def deletar(id):
 		if not linha:
 		    return jsonify({'error':'Endereço inexistente!'}), 404
 
-		cursor.execute("DELETE FROM enderecos WHERE idEndereco =%s", (id,))
+		cursor.execute("DELETE FROM api_clientes.enderecos WHERE idEndereco =%s", (id,))
 		conn.commit()
 		resposta = jsonify({'status':'Endereço deletado com sucesso!'})
 		resposta.status_code = 200
